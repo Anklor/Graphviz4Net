@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// $ANTLR 3.3.1.7705 ./Dot/AntlrParser/DotGrammar.g 2017-04-08 15:53:02
+// $ANTLR 3.3.1.7705 ./Dot/AntlrParser/DotGrammar.g 2017-04-08 19:24:53
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 219
@@ -510,7 +510,7 @@ public partial class DotGrammarParser : Antlr.Runtime.Parser
 				PopFollow();
 
 				DebugLocation(38, 36);
-                                AddGraphAttributes(graph_attrs); 
+				 this.AddGraphAttributes(graph_attrs); 
 
 				}
 				break;
@@ -529,7 +529,7 @@ public partial class DotGrammarParser : Antlr.Runtime.Parser
 				PopFollow();
 
 				DebugLocation(39, 52);
-                                AddVertex(vertex_id, stmt_opt_attr_list); 
+				 this.AddVertex(vertex_id, stmt_opt_attr_list); 
 
 				}
 				break;
@@ -566,7 +566,7 @@ public partial class DotGrammarParser : Antlr.Runtime.Parser
 				PopFollow();
 
 				DebugLocation(41, 3);
-                                AddEdge(source_id, dest_id, edge_attrs); 
+				 this.AddEdge(source_id, dest_id, edge_attrs); 
 
 				}
 				break;
@@ -655,7 +655,7 @@ public partial class DotGrammarParser : Antlr.Runtime.Parser
 			PopFollow();
 
 			DebugLocation(46, 31);
-                        EnterSubGraph(sub_graph_id); 
+			 this.EnterSubGraph(sub_graph_id); 
 			DebugLocation(46, 69);
 			Match(input,L_CURL_BRACKET,Follow._L_CURL_BRACKET_in_subgraph_stmt288); 
 			DebugLocation(46, 84);
@@ -666,7 +666,7 @@ public partial class DotGrammarParser : Antlr.Runtime.Parser
 			DebugLocation(46, 94);
 			Match(input,R_CURL_BRACKET,Follow._R_CURL_BRACKET_in_subgraph_stmt292); 
 			DebugLocation(46, 109);
-                        LeaveSubGraph(); 
+			 this.LeaveSubGraph(); 
 
 			}
 
@@ -1029,7 +1029,7 @@ public partial class DotGrammarParser : Antlr.Runtime.Parser
 				DebugLocation(64, 22);
 				attr_value_quoted=(IToken)Match(input,QUOTED_VALUE,Follow._QUOTED_VALUE_in_attr_value436); 
 				DebugLocation(64, 37);
-				 attr_value_result = Unquote(attr_value_quoted.Text); 
+				 attr_value_result = this.Unquote(attr_value_quoted.Text); 
 
 				}
 				break;

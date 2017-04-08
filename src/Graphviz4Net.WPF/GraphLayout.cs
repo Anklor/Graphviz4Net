@@ -1,16 +1,12 @@
-﻿
-namespace Graphviz4Net.WPF
-{
-    using System;
-    using System.ComponentModel;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Controls;
-    using Graphs;
-#if !SILVERLIGHT
-    using System.Threading.Tasks;
-#endif
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Threading.Tasks;
+using Graphviz4Net.Graphs;
 
+namespace Graphviz4Net.WPF
+{    
     [TemplatePart(Name = "PART_Canvas", Type = typeof(Canvas))]
     public class GraphLayout : Control
     {
@@ -18,39 +14,19 @@ namespace Graphviz4Net.WPF
 
         private IWPFLayoutElementsFactory elementsFactory = new DefaultLayoutElementsFactory();
 
-        public static readonly DependencyProperty GraphProperty =
-            DependencyProperty.Register(
-                "Graph",
-                typeof(IGraph),
-                typeof(GraphLayout),
+        public static readonly DependencyProperty GraphProperty = DependencyProperty.Register("Graph", typeof(IGraph), typeof(GraphLayout),
                 new PropertyMetadata(OnPropertyGraphChanged));
 
-        public static readonly DependencyProperty UseContentPresenterForAllElementsProperty =
-            DependencyProperty.Register(
-                "UseContentPresenterForAllElements",
-                typeof(bool),
-                typeof(GraphLayout),
+        public static readonly DependencyProperty UseContentPresenterForAllElementsProperty = DependencyProperty.Register( "UseContentPresenterForAllElements", typeof(bool), typeof(GraphLayout),
                 new PropertyMetadata(OnUseContentPresenterForAllElementsChanged));
 
-        public static readonly DependencyProperty LogGraphvizOutputProperty =
-            DependencyProperty.Register(
-                "LogGraphvizOutput",
-                typeof(bool),
-                typeof(GraphLayout),
+        public static readonly DependencyProperty LogGraphvizOutputProperty = DependencyProperty.Register("LogGraphvizOutput", typeof(bool), typeof(GraphLayout),
                 new PropertyMetadata(false));
 
-        public static readonly DependencyProperty EngineProperty =
-            DependencyProperty.Register(
-                "Engine",
-                typeof(LayoutEngine),
-                typeof(GraphLayout),
+        public static readonly DependencyProperty EngineProperty = DependencyProperty.Register("Engine", typeof(LayoutEngine), typeof(GraphLayout),
                 new PropertyMetadata(OnPropertyGraphChanged));
 
-        public static readonly DependencyProperty DotExecutablePathProperty =
-            DependencyProperty.Register(
-                "DotExecutablePath",
-                typeof(string),
-                typeof(GraphLayout),
+        public static readonly DependencyProperty DotExecutablePathProperty = DependencyProperty.Register("DotExecutablePath", typeof(string), typeof(GraphLayout),
                 new PropertyMetadata(string.Empty));
 
         private LayoutDirector director;
@@ -59,21 +35,15 @@ namespace Graphviz4Net.WPF
 
         private ProgressBar progress = null;
 
-#if !SILVERLIGHT
+
         static GraphLayout()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(
-                            typeof(GraphLayout),
-                            new FrameworkPropertyMetadata(typeof(GraphLayout)));                      
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(GraphLayout), new FrameworkPropertyMetadata(typeof(GraphLayout)));                      
         }
-#endif
+
 
         public GraphLayout()
         {
-#if SILVERLIGHT
-            this.DefaultStyleKey = typeof(GraphLayout);
-#endif
-
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 var graph = new Graph<string, Edge<string>>();
@@ -138,7 +108,7 @@ namespace Graphviz4Net.WPF
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            canvas = base.GetTemplateChild("PART_Canvas") as Canvas;
+            canvas = GetTemplateChild("PART_Canvas") as Canvas;
             UpdateVerticesLayout();
         }
 
@@ -148,20 +118,16 @@ namespace Graphviz4Net.WPF
         {
             var graphLayout = (GraphLayout)dependencyObject;
             if ((bool)args.NewValue)
-            {
                 graphLayout.elementsFactory = new ContentPresenterFactory();
-            }
             else
-            {
                 graphLayout.elementsFactory = new DefaultLayoutElementsFactory();                
-            }
         }
 
         private static void OnPropertyGraphChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             if (obj is GraphLayout)
             {
-                var graphLayout = (GraphLayout)obj;
+                GraphLayout graphLayout = (GraphLayout)obj;
                 graphLayout.UpdateVerticesLayout();
                 graphLayout.Graph.Changed += graphLayout.GraphChanged;
             }
@@ -174,32 +140,19 @@ namespace Graphviz4Net.WPF
 
         private void UpdateVerticesLayout()
         {
-            if (canvas == null ||
-                Graph == null ||
-                DesignerProperties.GetIsInDesignMode(this))
-            {
+            if (canvas == null || Graph == null || DesignerProperties.GetIsInDesignMode(this))
                 return;
-            }
 
             var builder = new WPFLayoutBuilder(canvas, elementsFactory);
             IDotRunner runner;
-#if SILVERLIGHT
-            runner = null;
-#else
+
             if (string.IsNullOrWhiteSpace(DotExecutablePath) == false)
-            {
                 runner = new DotExeRunner { DotExecutablePath = DotExecutablePath };
-            }
             else
-            {
                 runner = new DotExeRunner();
-            }
-#endif
 
             if (LogGraphvizOutput)
-            {
                 runner = new DotRunnerLogDecorator(runner);
-            }
 
             director = LayoutDirector.GetLayoutDirector(builder, dotRunner: runner);
 
@@ -209,20 +162,12 @@ namespace Graphviz4Net.WPF
             try
             {
                 director.StartBuilder(Graph);
-#if SILVERLIGHT
-                ThreadPool.QueueUserWorkItem(new LayoutAction(this, director).Run);
-#else
-                Task.Factory.StartNew(new LayoutAction(this, director).Run);
-#endif                    
+                Task.Factory.StartNew(new LayoutAction(this, director).Run);              
             }
             catch (Exception ex)
             {
-                var textBlock = new TextBlock { Width = 300, TextWrapping = TextWrapping.Wrap };
-                textBlock.Text =
-                    string.Format(
-                        "Graphviz4Net: an exception was thrown during layouting." +
-                        "Exception message: {0}.",
-                        ex.Message);
+                TextBlock textBlock = new TextBlock { Width = 300, TextWrapping = TextWrapping.Wrap };
+                textBlock.Text = string.Format("Graphviz4Net: an exception was thrown during the layout. Exception message: {0}.", ex.Message);
                 canvas.Children.Add(textBlock);
             }
         }
@@ -247,20 +192,13 @@ namespace Graphviz4Net.WPF
                 ShowError(ex);
             }
 
-            if (OnLayoutUpdated != null)
-            {
-                OnLayoutUpdated(this, new EventArgs());
-            }
+            OnLayoutUpdated?.Invoke(this, new EventArgs());
         }
 
         private void ShowError(Exception ex)
         {
-            var textBlock = new TextBlock { Width = 300, TextWrapping = TextWrapping.Wrap };
-            textBlock.Text =
-                string.Format(
-                    "Graphviz4Net: an exception was thrown during layouting." +
-                    "Exception message: {0}.",
-                    ex.Message);
+            TextBlock textBlock = new TextBlock { Width = 300, TextWrapping = TextWrapping.Wrap };
+            textBlock.Text = string.Format("Graphviz4Net: an exception was thrown during the layout. Exception message: {0}.", ex.Message);
             canvas.Children.Clear();
             canvas.Children.Add(textBlock);
         }
@@ -280,7 +218,7 @@ namespace Graphviz4Net.WPF
 
             public void Run()
             {
-                var engine = default(LayoutEngine);
+                LayoutEngine engine = default(LayoutEngine);
                 parent.Dispatcher.Invoke(new VoidDelegate(() => engine = parent.Engine));
 
                 try

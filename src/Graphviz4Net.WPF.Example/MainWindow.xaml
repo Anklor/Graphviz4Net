@@ -4,6 +4,7 @@
         xmlns:i="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:Controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions" 
         xmlns:Example="clr-namespace:Graphviz4Net.WPF.Example" 
+        xmlns:Entities="clr-namespace:Graphviz4Net.WPF.Example.Entities" 
         xmlns:GraphViz="clr-namespace:Graphviz4Net.Graphs;assembly=Graphviz4Net"
         xmlns:WPF="clr-namespace:Graphviz4Net.WPF;assembly=Graphviz4Net.WPF" 
         xmlns:ViewModels="clr-namespace:Graphviz4Net.WPF.ViewModels;assembly=Graphviz4Net.WPF" 
@@ -12,7 +13,7 @@
         Height="{Binding WindowHeight, Mode=OneWayToSource}" 
         Width="{Binding WindowWidth, Mode=OneWayToSource}">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type Example:Person}">
+        <DataTemplate DataType="{x:Type Entities:Person}">
             <Border BorderBrush="Black" BorderThickness="1" Padding="0" CornerRadius="5" Background="White">
                 <Border.Style>
                     <Style>
@@ -47,14 +48,14 @@
                 </StackPanel>
             </Border>
         </DataTemplate>
-        
-        <DataTemplate DataType="{x:Type Example:DiamondArrow}">
+
+        <DataTemplate DataType="{x:Type Entities:DiamondArrow}">
             <Canvas Width="6" Height="11">
                 <Polygon Points="3,0 6,5 3,10 0,5" Stroke="Black" StrokeThickness="1" Fill="Black"/>
             </Canvas>            
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type Example:Arrow}">
+        <DataTemplate DataType="{x:Type Entities:Arrow}">
             <Path Data="M 0,0 L 20,0 L 10,10 L 0,0" Stroke="Black" StrokeThickness="1">
             </Path>
         </DataTemplate>        
@@ -91,6 +92,10 @@
         </ObjectDataProvider>
     </Window.Resources>
 
+    
+    
+    
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -142,11 +147,13 @@
         
         <Controls:ZoomControl Grid.Column="0" Grid.Row="1">
             <WPF:GraphLayout 
+                x:Name="GraphLayout"
                 UseContentPresenterForAllElements="True"
                 LogGraphvizOutput="True"
+                DotExecutablePath="C:\Program Files (x86)\Graphviz2.38\bin"
                 Graph="{Binding Graph}"
-                Engine="{Binding LayoutEngine}"
-                x:Name="GraphLayout">
+
+                Engine="{Binding LayoutEngine}"  >
                 <WPF:GraphLayout.Resources>
                     <Style TargetType="ProgressBar">
                         <Setter Property="Template">

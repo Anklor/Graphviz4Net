@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// $ANTLR 3.3.1.7705 ./Dot/AntlrParser/DotGrammar.g 2017-04-08 15:53:03
+// $ANTLR 3.3.1.7705 ./Dot/AntlrParser/DotGrammar.g 2017-04-08 19:24:54
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 219
@@ -2431,14 +2431,14 @@ public partial class DotGrammarLexer : Antlr.Runtime.Lexer
 		public DFA6( BaseRecognizer recognizer )
 		{
 			this.recognizer = recognizer;
-                decisionNumber = 6;
-                eot = DFA6_eot;
-                eof = DFA6_eof;
-                min = DFA6_min;
-                max = DFA6_max;
-                accept = DFA6_accept;
-                special = DFA6_special;
-                transition = DFA6_transition;
+			this.decisionNumber = 6;
+			this.eot = DFA6_eot;
+			this.eof = DFA6_eof;
+			this.min = DFA6_min;
+			this.max = DFA6_max;
+			this.accept = DFA6_accept;
+			this.special = DFA6_special;
+			this.transition = DFA6_transition;
 		}
 
 		public override string Description { get { return "1:1: Tokens : ( COMMA | EQUALS | L_CURL_BRACKET | L_SQUARE_BRACKET | R_CURL_BRACKET | R_SQUARE_BRACKET | SEMICOLON | QUOTED_VALUE | SUBGRAPH | GRAPH | NODE | EDGE | EDGE_OPERATOR_NOARROW | EDGE_OPERATOR_ARROW | ALLOWED_QUOTED_VALUES | ID | WS );"; } }

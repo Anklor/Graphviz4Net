@@ -1,15 +1,14 @@
-
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Windows;
+using System.IO;
+using Graphviz4Net.Dot;
+using Graphviz4Net.Graphs;
+using Graphviz4Net.Dot.AntlrParser;
 
 namespace Graphviz4Net
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
-    using System.Windows;
-    using Dot;
-    using Dot.AntlrParser;
-    using Graphs;
-
     /// <summary>
     /// Directs the process of building a layout. 
     /// </summary>
@@ -61,18 +60,17 @@ namespace Graphviz4Net
         /// documentation of the constructor of this class for the list of 
         /// default implementations of these interfaces.</para>
         /// </remarks>
-        public static LayoutDirector GetLayoutDirector(
-            ILayoutBuilder<int> builder,
-            IDotParser<int> parser = null, 
-            IGraphToDotConverter converter = null,
-            IDotRunner dotRunner = null)
+        public static LayoutDirector GetLayoutDirector(ILayoutBuilder<int> builder, IDotParser<int> parser = null, IGraphToDotConverter converter = null, IDotRunner dotRunner = null)
         {
             Contract.Requires(builder != null);
             Contract.Ensures(Contract.Result<LayoutDirector>() != null);
+
             if (parser == null)
                 parser = AntlrParserAdapter<int>.GetParser();
+
             if (converter == null)
                 converter = new GraphToDotConverter();
+
             if (dotRunner == null)
             {
 #if SILVERLIGHT
@@ -144,14 +142,8 @@ namespace Graphviz4Net
                     "LayoutDirector: the RunDot method must be invoked before call to BuildGraph");
             }
 
-            var reader = dotRunner.RunDot(
-                writer =>
-                    originalGraphElementsMap =
-                        converter.Convert(
-                            writer,
-                            originalGraph, 
-                            new AttributesProvider(builder)),
-                engine);
+            Action<TextWriter> action = new Action<TextWriter>(writer => originalGraphElementsMap = converter.Convert(writer, originalGraph, new AttributesProvider(builder)));
+            TextReader reader = dotRunner.RunDot(action, engine);
             dotGraph = parser.Parse(reader);
         }
 
@@ -164,16 +156,10 @@ namespace Graphviz4Net
         public void BuildGraph()
         {
             if (dotGraph == null)
-            {
-                throw new InvalidOperationException(
-                    "LayoutDirector: the RunDot method must be invoked before call to BuildGraph");
-            }
+                throw new InvalidOperationException("LayoutDirector: the RunDot method must be invoked before call to BuildGraph");
 
-            if (dotGraph.Width.HasValue == false ||
-                dotGraph.Height.HasValue == false)
-            {
+            if (dotGraph.Width.HasValue == false || dotGraph.Height.HasValue == false)
                 throw new InvalidFormatException("Graph in dot output does not have width or height value set up.");
-            }
 
             builder.BuildGraph(dotGraph.Width.Value, dotGraph.Height.Value, originalGraph, dotGraph);
 
@@ -186,17 +172,13 @@ namespace Graphviz4Net
 
         private void BuildEdges()
         {
-            foreach (var edge in dotGraph.Edges)
+            foreach (IEdge edge in dotGraph.Edges)
             {
                 if (edge is DotEdge<int>)
                 {
-                    var dotEdge = (DotEdge<int>) edge;
-                    Contract.Assert(
-                        0 <= dotEdge.Id && dotEdge.Id < originalGraphElementsMap.Length,
-                        "The id of an edge is not in the range of originalGraphElementsMap.");
-                    Contract.Assert(
-                        originalGraphElementsMap[dotEdge.Id] is IEdge,
-                        "The id of an edge does not point to an IEdge in originalGraphElementsMap.");
+                    DotEdge<int> dotEdge = (DotEdge<int>) edge;
+                    Contract.Assert(0 <= dotEdge.Id && dotEdge.Id < originalGraphElementsMap.Length, "The id of an edge is not in the range of originalGraphElementsMap.");
+                    Contract.Assert(originalGraphElementsMap[dotEdge.Id] is IEdge, "The id of an edge does not point to an IEdge in originalGraphElementsMap.");
                     builder.BuildEdge(dotEdge.Path, (IEdge)originalGraphElementsMap[dotEdge.Id], dotEdge);
                 }
             }
