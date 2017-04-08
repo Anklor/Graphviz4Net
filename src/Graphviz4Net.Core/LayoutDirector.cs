@@ -119,8 +119,8 @@ namespace Graphviz4Net
         /// <param name="graph">The graph to be layouted.</param>
         public void StartBuilder(IGraph graph)
         {
-            this.dotGraph = null;
-            this.originalGraph = graph;
+            dotGraph = null;
+            originalGraph = graph;
             builder.Start(graph);            
         }
 
@@ -138,21 +138,21 @@ namespace Graphviz4Net
         /// </remarks>
         public void RunDot(LayoutEngine engine = LayoutEngine.Dot)
         {
-            if (this.originalGraph == null)
+            if (originalGraph == null)
             {
                 throw new InvalidOperationException(
                     "LayoutDirector: the RunDot method must be invoked before call to BuildGraph");
             }
 
-            var reader = this.dotRunner.RunDot(
-                writer => 
-                    this.originalGraphElementsMap = 
-                        this.converter.Convert(
-                            writer, 
-                            this.originalGraph, 
+            var reader = dotRunner.RunDot(
+                writer =>
+                    originalGraphElementsMap =
+                        converter.Convert(
+                            writer,
+                            originalGraph, 
                             new AttributesProvider(builder)),
                 engine);
-            this.dotGraph = this.parser.Parse(reader);
+            dotGraph = parser.Parse(reader);
         }
 
         /// <summary>
@@ -163,25 +163,25 @@ namespace Graphviz4Net
         /// <exception cref="InvalidFormatException"/>
         public void BuildGraph()
         {
-            if (this.dotGraph == null)
+            if (dotGraph == null)
             {
                 throw new InvalidOperationException(
                     "LayoutDirector: the RunDot method must be invoked before call to BuildGraph");
             }
 
-            if (this.dotGraph.Width.HasValue == false ||
-                this.dotGraph.Height.HasValue == false)
+            if (dotGraph.Width.HasValue == false ||
+                dotGraph.Height.HasValue == false)
             {
                 throw new InvalidFormatException("Graph in dot output does not have width or height value set up.");
             }
-            
-            this.builder.BuildGraph(dotGraph.Width.Value, dotGraph.Height.Value, this.originalGraph, dotGraph);
 
-            this.BuildVertices();
-            this.BuildSubGraphs();
-            this.BuildEdges();
+            builder.BuildGraph(dotGraph.Width.Value, dotGraph.Height.Value, originalGraph, dotGraph);
 
-            this.builder.Finish();
+            BuildVertices();
+            BuildSubGraphs();
+            BuildEdges();
+
+            builder.Finish();
         }
 
         private void BuildEdges()
@@ -192,12 +192,12 @@ namespace Graphviz4Net
                 {
                     var dotEdge = (DotEdge<int>) edge;
                     Contract.Assert(
-                        0 <= dotEdge.Id && dotEdge.Id < this.originalGraphElementsMap.Length,
+                        0 <= dotEdge.Id && dotEdge.Id < originalGraphElementsMap.Length,
                         "The id of an edge is not in the range of originalGraphElementsMap.");
                     Contract.Assert(
-                        this.originalGraphElementsMap[dotEdge.Id] is IEdge,
+                        originalGraphElementsMap[dotEdge.Id] is IEdge,
                         "The id of an edge does not point to an IEdge in originalGraphElementsMap.");
-                    builder.BuildEdge(dotEdge.Path, (IEdge)this.originalGraphElementsMap[dotEdge.Id], dotEdge);
+                    builder.BuildEdge(dotEdge.Path, (IEdge)originalGraphElementsMap[dotEdge.Id], dotEdge);
                 }
             }
         }
@@ -209,17 +209,17 @@ namespace Graphviz4Net
                 if (subGraph.BoundingBox.HasAllValues)
                 {
                     Contract.Assert(
-                        0 <= subGraph.Id && subGraph.Id < this.originalGraphElementsMap.Length,
+                        0 <= subGraph.Id && subGraph.Id < originalGraphElementsMap.Length,
                         "The id of a subGraph is not in the range of originalGraphElementsMap.");
                     Contract.Assert(
-                        this.originalGraphElementsMap[subGraph.Id] is ISubGraph,
+                        originalGraphElementsMap[subGraph.Id] is ISubGraph,
                         "The id of an edge does not point to an IEdge in originalGraphElementsMap.");
                     builder.BuildSubGraph(
                         subGraph.BoundingBox.LeftX.Value,
                         subGraph.BoundingBox.UpperY.Value,
                         subGraph.BoundingBox.RightX.Value,
                         subGraph.BoundingBox.LowerY.Value,
-                        (ISubGraph)this.originalGraphElementsMap[subGraph.Id],
+                        (ISubGraph)originalGraphElementsMap[subGraph.Id],
                         subGraph);
                 }
                 else
@@ -241,13 +241,13 @@ namespace Graphviz4Net
                     vertex.Height.HasValue)
                 {
                     Contract.Assert(
-                        0 <= vertex.Id && vertex.Id < this.originalGraphElementsMap.Length,
+                        0 <= vertex.Id && vertex.Id < originalGraphElementsMap.Length,
                         "The id of a vertex is not in the range of originalGraphElementsMap.");
                     builder.BuildVertex(
                         vertex.Position.Value,
                         vertex.Width.Value,
                         vertex.Height.Value,
-                        this.originalGraphElementsMap[vertex.Id],
+                        originalGraphElementsMap[vertex.Id],
                         vertex);
                 }
                 else
@@ -280,13 +280,13 @@ namespace Graphviz4Net
             public IDictionary<string, string> GetVertexAttributes(object vertex)
             {
                 var result = new Dictionary<string, string>();
-                Size size = this.builder.GetSize(vertex);
+                Size size = builder.GetSize(vertex);
                 result.Add("width", size.Width.ToInvariantString());
                 result.Add("height", size.Height.ToInvariantString());
                 result.Add("shape", "rect");
                 result.Add("fixedsize", "true");
 
-                foreach (var attribute in this.builder.GetAdditionalAttributes(vertex))
+                foreach (var attribute in builder.GetAdditionalAttributes(vertex))
                 {
                     result.Add(attribute.Key, attribute.Value);
                 }

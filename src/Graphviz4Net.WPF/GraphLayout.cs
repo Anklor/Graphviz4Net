@@ -98,7 +98,7 @@ namespace Graphviz4Net.WPF
                 graph.AddEdge(new Edge<string>(e, f));
                 graph.AddEdge(new Edge<string>(e, c));
                 graph.AddEdge(new Edge<string>(c, f));
-                this.Graph = graph;
+                Graph = graph;
                 graph.Ratio = 0.5;
             }
         }
@@ -111,35 +111,35 @@ namespace Graphviz4Net.WPF
 
         public bool LogGraphvizOutput
         {
-            get { return (bool)this.GetValue(LogGraphvizOutputProperty); }
-            set { this.SetValue(LogGraphvizOutputProperty, value); }
+            get { return (bool)GetValue(LogGraphvizOutputProperty); }
+            set { SetValue(LogGraphvizOutputProperty, value); }
         }
 
         public LayoutEngine Engine
         {
-            get { return (LayoutEngine)this.GetValue(EngineProperty); }
-            set { this.SetValue(EngineProperty, value); }
+            get { return (LayoutEngine)GetValue(EngineProperty); }
+            set { SetValue(EngineProperty, value); }
         }
 
         public event EventHandler<EventArgs> OnLayoutUpdated;
 
         public bool UseContentPresenterForAllElements
         {
-            get { return (bool)this.GetValue(UseContentPresenterForAllElementsProperty); }
-            set { this.SetValue(UseContentPresenterForAllElementsProperty, value); }
+            get { return (bool)GetValue(UseContentPresenterForAllElementsProperty); }
+            set { SetValue(UseContentPresenterForAllElementsProperty, value); }
         }
 
         public string DotExecutablePath
         {
-            get { return (string)this.GetValue(DotExecutablePathProperty); }
-            set { this.SetValue(DotExecutablePathProperty, value); }
+            get { return (string)GetValue(DotExecutablePathProperty); }
+            set { SetValue(DotExecutablePathProperty, value); }
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.canvas = base.GetTemplateChild("PART_Canvas") as Canvas;
-            this.UpdateVerticesLayout();
+            canvas = base.GetTemplateChild("PART_Canvas") as Canvas;
+            UpdateVerticesLayout();
         }
 
         private static void OnUseContentPresenterForAllElementsChanged(
@@ -169,26 +169,26 @@ namespace Graphviz4Net.WPF
 
         private void GraphChanged(object sender, GraphChangedArgs e)
         {
-            this.UpdateVerticesLayout();
+            UpdateVerticesLayout();
         }
 
         private void UpdateVerticesLayout()
         {
-            if (this.canvas == null ||
-				this.Graph == null ||
+            if (canvas == null ||
+                Graph == null ||
                 DesignerProperties.GetIsInDesignMode(this))
             {
                 return;
             }
 
-            var builder = new WPFLayoutBuilder(this.canvas, this.elementsFactory);
+            var builder = new WPFLayoutBuilder(canvas, elementsFactory);
             IDotRunner runner;
 #if SILVERLIGHT
             runner = null;
 #else
-            if (string.IsNullOrWhiteSpace(this.DotExecutablePath) == false)
+            if (string.IsNullOrWhiteSpace(DotExecutablePath) == false)
             {
-                runner = new DotExeRunner { DotExecutablePath = this.DotExecutablePath };
+                runner = new DotExeRunner { DotExecutablePath = DotExecutablePath };
             }
             else
             {
@@ -196,19 +196,19 @@ namespace Graphviz4Net.WPF
             }
 #endif
 
-            if (this.LogGraphvizOutput)
+            if (LogGraphvizOutput)
             {
                 runner = new DotRunnerLogDecorator(runner);
             }
 
             director = LayoutDirector.GetLayoutDirector(builder, dotRunner: runner);
 
-            this.canvas.Children.Clear();
-            this.progress = new ProgressBar { MinWidth = 100, MinHeight = 12, IsIndeterminate = true, Margin = new Thickness(50) };
-            this.canvas.Children.Add(this.progress);
+            canvas.Children.Clear();
+            progress = new ProgressBar { MinWidth = 100, MinHeight = 12, IsIndeterminate = true, Margin = new Thickness(50) };
+            canvas.Children.Add(progress);
             try
             {
-                director.StartBuilder(this.Graph);
+                director.StartBuilder(Graph);
 #if SILVERLIGHT
                 ThreadPool.QueueUserWorkItem(new LayoutAction(this, director).Run);
 #else
@@ -223,18 +223,18 @@ namespace Graphviz4Net.WPF
                         "Graphviz4Net: an exception was thrown during layouting." +
                         "Exception message: {0}.",
                         ex.Message);
-                this.canvas.Children.Add(textBlock);
+                canvas.Children.Add(textBlock);
             }
         }
 
         private void BuildGraph()
         {
-            this.canvas.Children.Remove(this.progress);
+            canvas.Children.Remove(progress);
 
-            if (this.backgroundException != null)
+            if (backgroundException != null)
             {
-                this.ShowError(this.backgroundException);
-                this.backgroundException = null;
+                ShowError(backgroundException);
+                backgroundException = null;
                 return;
             }
 
@@ -244,12 +244,12 @@ namespace Graphviz4Net.WPF
             }
             catch (Exception ex)
             {
-                this.ShowError(ex);
+                ShowError(ex);
             }
 
-            if (this.OnLayoutUpdated != null)
+            if (OnLayoutUpdated != null)
             {
-                this.OnLayoutUpdated(this, new EventArgs());
+                OnLayoutUpdated(this, new EventArgs());
             }
         }
 
@@ -261,8 +261,8 @@ namespace Graphviz4Net.WPF
                     "Graphviz4Net: an exception was thrown during layouting." +
                     "Exception message: {0}.",
                     ex.Message);
-            this.canvas.Children.Clear();
-            this.canvas.Children.Add(textBlock);
+            canvas.Children.Clear();
+            canvas.Children.Add(textBlock);
         }
 
         private delegate void VoidDelegate();
@@ -281,23 +281,23 @@ namespace Graphviz4Net.WPF
             public void Run()
             {
                 var engine = default(LayoutEngine);
-                this.parent.Dispatcher.Invoke(new VoidDelegate(() => engine = this.parent.Engine));
+                parent.Dispatcher.Invoke(new VoidDelegate(() => engine = parent.Engine));
 
                 try
                 {
-                    this.director.RunDot(engine);
+                    director.RunDot(engine);
                 }
                 catch (Exception ex)
                 {
-                    this.parent.backgroundException = ex;
+                    parent.backgroundException = ex;
                 }
 
-                this.parent.Dispatcher.BeginInvoke(new VoidDelegate(this.parent.BuildGraph));
+                parent.Dispatcher.BeginInvoke(new VoidDelegate(parent.BuildGraph));
             }
 
             public void Run(object stateInfo)
             {
-                this.Run();
+                Run();
             }
         }
     }

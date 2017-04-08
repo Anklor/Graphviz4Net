@@ -31,27 +31,27 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public IEnumerable<IEdge> Edges
         {
-            get { return this.edges; }
+            get { return edges; }
         }
 
         public IEnumerable<TVertex> Vertices
         {
-            get { return this.vertices; }
+            get { return vertices; }
         }
 
         public IEnumerable<TSubGraph> SubGraphs
         {
-            get { return this.subGraphs; }
+            get { return subGraphs; }
         }
 
         public IEnumerable<TVeticesEdge> VerticesEdges
         {
-            get { return this.Edges.OfType<TVeticesEdge>(); }
+            get { return Edges.OfType<TVeticesEdge>(); }
         }
 
         public IEnumerable<TSubGraphsEdge> SubGraphsEdges
         {
-            get { return this.Edges.OfType<TSubGraphsEdge>(); }
+            get { return Edges.OfType<TSubGraphsEdge>(); }
         }
 
         public event EventHandler<GraphChangedArgs> Changed;
@@ -61,8 +61,8 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public double? Ratio
         {
-            get { return Utils.ParseInvariantNullableDouble(this.Attributes.GetValue("ratio")); }
-            set { this.Attributes["ratio"] = value.ToInvariantString(); }
+            get { return Utils.ParseInvariantNullableDouble(Attributes.GetValue("ratio")); }
+            set { Attributes["ratio"] = value.ToInvariantString(); }
         }
 
         /// <summary>
@@ -72,19 +72,19 @@ namespace Graphviz4Net.Graphs
         {
             get
             {
-                return this.vertices.Concat(this.subGraphs.SelectMany(x => x.Vertices));
+                return vertices.Concat(subGraphs.SelectMany(x => x.Vertices));
             }
         }
 
         public IDictionary<string, string> Attributes
         {
-            get { return this.attributes; }
+            get { return attributes; }
         }
 
         public RankDirection Rankdir
         {
-            get { return RankDirection.FromString(this.attributes.GetValue("rankdir", "LR")); }
-            set { this.attributes["rankdir"] = value.ToString(); }
+            get { return RankDirection.FromString(attributes.GetValue("rankdir", "LR")); }
+            set { attributes["rankdir"] = value.ToString(); }
         }
 
         #endregion
@@ -94,34 +94,34 @@ namespace Graphviz4Net.Graphs
         public void AddEdge(TVeticesEdge edge)
         {
             Contract.Requires(edge != null);
-            Contract.Requires(this.AllVertices.Contains(edge.Source), "Edge's source does not belong to the graph.");
-            Contract.Requires(this.AllVertices.Contains(edge.Destination), "Edge's source does not belong to the graph.");
-            this.edges.Add(edge);
-            this.RaiseChanged();
+            Contract.Requires(AllVertices.Contains(edge.Source), "Edge's source does not belong to the graph.");
+            Contract.Requires(AllVertices.Contains(edge.Destination), "Edge's source does not belong to the graph.");
+            edges.Add(edge);
+            RaiseChanged();
         }
 
         public void AddEdge(TSubGraphsEdge edge)
         {
             Contract.Requires(edge != null);
-            Contract.Requires(this.SubGraphs.Contains(edge.Source), "Edge's source does not belong to the graph.");
-            Contract.Requires(this.SubGraphs.Contains(edge.Destination), "Edge's source does not belong to the graph.");
-            this.edges.Add(edge);
-            this.RaiseChanged();
+            Contract.Requires(SubGraphs.Contains(edge.Source), "Edge's source does not belong to the graph.");
+            Contract.Requires(SubGraphs.Contains(edge.Destination), "Edge's source does not belong to the graph.");
+            edges.Add(edge);
+            RaiseChanged();
         }
 
         public void AddVertex(TVertex vertex)
         {
             Contract.Requires(vertex != null);
-            Contract.Requires(this.AllVertices.Contains(vertex) == false, "Vertex is already in the graph.");
-            this.vertices.Add(vertex);
-            this.RaiseChanged();
+            Contract.Requires(AllVertices.Contains(vertex) == false, "Vertex is already in the graph.");
+            vertices.Add(vertex);
+            RaiseChanged();
         }
 
         public void AddSubGraph(TSubGraph subGraph)
         {
             Contract.Requires(subGraph != null);
-            this.subGraphs.Add(subGraph);
-            this.RaiseChanged();
+            subGraphs.Add(subGraph);
+            RaiseChanged();
             subGraph.Changed += SubGraphChanged;
         }
 
@@ -146,26 +146,26 @@ namespace Graphviz4Net.Graphs
         {
             Contract.Requires(vertex != null);
             Contract.Requires(
-                this.Vertices.Contains(vertex),
+                Vertices.Contains(vertex),
                 "RemoveVertex: given vertex is not part of the graph. See the API documentation for more details.");
-            this.vertices.Remove(vertex);
-            this.RaiseChanged();
+            vertices.Remove(vertex);
+            RaiseChanged();
         }
 
         public void RemoveEdge(IEdge edge)
         {
             Contract.Requires(edge != null);
-            Contract.Requires(this.edges.Contains(edge), "RemoveEdge: given edge is not part of the graph");
-            this.edges.Remove(edge);
-            this.RaiseChanged();
+            Contract.Requires(edges.Contains(edge), "RemoveEdge: given edge is not part of the graph");
+            edges.Remove(edge);
+            RaiseChanged();
         }
 
         public void RemoveSubGraph(TSubGraph subGraph)
         {
             Contract.Requires(subGraph != null);
-            Contract.Requires(this.subGraphs.Contains(subGraph), "RemoveSubGraph: given subgraph is not part of the graph.");
-            this.subGraphs.Remove(subGraph);
-            this.RaiseChanged();
+            Contract.Requires(subGraphs.Contains(subGraph), "RemoveSubGraph: given subgraph is not part of the graph.");
+            subGraphs.Remove(subGraph);
+            RaiseChanged();
         }
 
         #region Explicit IGraph implementation
@@ -176,13 +176,13 @@ namespace Graphviz4Net.Graphs
             {
                 // Note: we use Cast<object> instead of casting to IEnumerable<object>, because 
                 // silverlight seems not to support the former
-                return this.vertices.Cast<object>();
+                return vertices.Cast<object>();
             }
         }
 
         IEnumerable<ISubGraph> IGraph.SubGraphs
         {
-            get { return this.subGraphs.Cast<ISubGraph>(); }
+            get { return subGraphs.Cast<ISubGraph>(); }
         }
 
         #endregion
@@ -191,7 +191,7 @@ namespace Graphviz4Net.Graphs
 
         IEnumerable<object> IVerticesCollection.Vertices
         {
-            get { return this.vertices.Cast<object>(); }
+            get { return vertices.Cast<object>(); }
         }
 
         void IVerticesCollection.AddVertex(object vertex)
@@ -206,7 +206,7 @@ namespace Graphviz4Net.Graphs
 
             }
 
-            this.AddVertex((TVertex) vertex);
+            AddVertex((TVertex) vertex);
         }
 
         #endregion
@@ -214,12 +214,12 @@ namespace Graphviz4Net.Graphs
         public override string ToString()
         {
             var result = new StringBuilder("graph: ");
-            foreach (var vertex in this.Vertices)
+            foreach (var vertex in Vertices)
             {
                 result.AppendLine(vertex.ToString());
             }
 
-            foreach (var subGraph in this.SubGraphs)
+            foreach (var subGraph in SubGraphs)
             {
                 result.Append(subGraph);
                 result.AppendLine();
@@ -235,34 +235,34 @@ namespace Graphviz4Net.Graphs
 
         protected void StartChanges()
         {
-            this.startChangesCalled++;
+            startChangesCalled++;
         }
 
         protected void EndChanges()
         {
-            if (this.startChangesCalled == 0)
+            if (startChangesCalled == 0)
             {
                 throw new InvalidOperationException("Cannot call EndChanges before StartChanges.");
             }
 
-            this.startChangesCalled--;
-            if (this.startChangesCalled == 0)
+            startChangesCalled--;
+            if (startChangesCalled == 0)
             {
-                this.RaiseChanged();
+                RaiseChanged();
             }
         }
 
         protected void RaiseChanged()
         {
-            if (this.Changed != null && this.startChangesCalled == 0)
+            if (Changed != null && startChangesCalled == 0)
             {
-                this.Changed(this, new GraphChangedArgs());
+                Changed(this, new GraphChangedArgs());
             }
         }
 
         private void SubGraphChanged(object sender, GraphChangedArgs e)
         {
-            this.RaiseChanged();
+            RaiseChanged();
         }
     }
 
@@ -279,17 +279,17 @@ namespace Graphviz4Net.Graphs
         public void RemoveVertexWithEdges(TVertex vertex)
         {
             Contract.Requires(vertex != null);
-            this.StartChanges();
+            StartChanges();
             bool found = false;
 
-            if (this.Vertices.Contains(vertex))
+            if (Vertices.Contains(vertex))
             {
-                this.RemoveVertex(vertex);
+                RemoveVertex(vertex);
                 found = true;
             }
             else
             {
-                foreach (var subGraph in this.SubGraphs)
+                foreach (var subGraph in SubGraphs)
                 {
                     if (subGraph.Vertices.Contains(vertex))
                     {
@@ -301,8 +301,8 @@ namespace Graphviz4Net.Graphs
 
             if (found)
             {
-                this.RemoveEdgesWith(vertex);
-                this.EndChanges();
+                RemoveEdgesWith(vertex);
+                EndChanges();
                 return;
             }
 
@@ -312,10 +312,10 @@ namespace Graphviz4Net.Graphs
 
         private void RemoveEdgesWith(TVertex vertex)
         {
-            var edgesToRemove = this.Edges.Where(e => e.Source.Equals(vertex) || e.Destination.Equals(vertex)).ToArray();
+            var edgesToRemove = Edges.Where(e => e.Source.Equals(vertex) || e.Destination.Equals(vertex)).ToArray();
             foreach (var e in edgesToRemove)
             {
-                this.RemoveEdge(e);
+                RemoveEdge(e);
             }
         }
     }

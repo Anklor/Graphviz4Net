@@ -9,8 +9,8 @@ namespace Graphviz4Net
     {
         public DotExeRunner()
         {
-            this.DotExecutablePath = string.Empty;
-            this.DotExecutable = "dot.exe";
+            DotExecutablePath = string.Empty;
+            DotExecutable = "dot.exe";
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Graphviz4Net
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     Arguments = $"-T{format} -K{engine.ToString().ToLowerInvariant()}",
-                    FileName = Path.Combine(this.DotExecutablePath, this.DotExecutable),
+                    FileName = Path.Combine(DotExecutablePath, DotExecutable),
                     RedirectStandardOutput = true,
                     RedirectStandardInput = true
                 };

@@ -16,12 +16,12 @@ namespace Graphviz4Net.Graphs
 			object sourcePort = null, 
 			IDictionary<string, string> attributes = null)
         {
-            this.Source = source;
-            this.SourcePort = sourcePort;
-            this.Destination = destination;
-            this.DestinationPort = destinationPort;
-            this.DestinationArrow = destinationArrow;
-            this.SourceArrow = sourceArrow;
+            Source = source;
+            SourcePort = sourcePort;
+            Destination = destination;
+            DestinationPort = destinationPort;
+            DestinationArrow = destinationArrow;
+            SourceArrow = sourceArrow;
             this.attributes = attributes ?? new Dictionary<string, string>();
         }
 
@@ -50,8 +50,8 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public string SourceArrowLabel
         {
-            get { return this.Attributes.GetValue("taillabel", string.Empty); }
-            set { this.Attributes["taillabel"] = value; }
+            get { return Attributes.GetValue("taillabel", string.Empty); }
+            set { Attributes["taillabel"] = value; }
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public string DestinationArrowLabel
         {
-            get { return this.Attributes.GetValue("headlabel", string.Empty); }
-            set { this.Attributes["headlabel"] = value; }
+            get { return Attributes.GetValue("headlabel", string.Empty); }
+            set { Attributes["headlabel"] = value; }
         }
 
         /// <summary>
@@ -69,8 +69,8 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public string Label
         {
-            get { return this.Attributes.GetValue("label", string.Empty); }
-            set { this.Attributes["label"] = value; }
+            get { return Attributes.GetValue("label", string.Empty); }
+            set { Attributes["label"] = value; }
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public double? Weight
         {
-            get { return Utils.ParseInvariantNullableDouble(this.Attributes.GetValue("weight")); }
-            set { this.Attributes["weight"] = value.ToInvariantString(); }
+            get { return Utils.ParseInvariantNullableDouble(Attributes.GetValue("weight")); }
+            set { Attributes["weight"] = value.ToInvariantString(); }
         }
 
         /// <summary>
@@ -89,8 +89,8 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public double? ArrowLabelDistance
         {
-            get { return Utils.ParseInvariantNullableDouble(this.Attributes.GetValue("labeldistance")); }
-            set { this.Attributes["labeldistance"] = value.ToInvariantString(); }            
+            get { return Utils.ParseInvariantNullableDouble(Attributes.GetValue("labeldistance")); }
+            set { Attributes["labeldistance"] = value.ToInvariantString(); }            
         }
 
         /// <summary>
@@ -98,25 +98,25 @@ namespace Graphviz4Net.Graphs
         /// </summary>
         public double? Minlen
         {
-            get { return Utils.ParseInvariantNullableDouble(this.Attributes.GetValue("minlen")); }
-            set { this.Attributes["minlen"] = value.ToInvariantString(); }
+            get { return Utils.ParseInvariantNullableDouble(Attributes.GetValue("minlen")); }
+            set { Attributes["minlen"] = value.ToInvariantString(); }
         }
 
         public IDictionary<string, string> Attributes
         {
-            get { return this.attributes; }
+            get { return attributes; }
         }
 
         #region IEdge explicit implementation
 
         object IEdge.Destination
         {
-            get { return this.Destination; }
+            get { return Destination; }
         }
 
         object IEdge.Source
         {
-            get { return this.Source; }
+            get { return Source; }
         }
 
         #endregion
@@ -139,12 +139,12 @@ namespace Graphviz4Net.Graphs
 
         public override int GetHashCode()
         {
-            return this.Source.GetHashCode() ^ this.Destination.GetHashCode();
+            return Source.GetHashCode() ^ Destination.GetHashCode();
         }
 
         public override string ToString()
         {
-            return string.Format("{0} -- {1} [{2}]", this.Source, this.Destination, this.GetAttributes());
+            return string.Format("{0} -- {1} [{2}]", Source, Destination, this.GetAttributes());
         }
     }
 }

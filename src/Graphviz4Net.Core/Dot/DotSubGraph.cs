@@ -16,10 +16,10 @@ namespace Graphviz4Net.Dot
             get
             {
                 int id;
-                if (this.Name == null ||
-                    int.TryParse(this.Name.Substring("cluster".Length), out id) == false)
+                if (Name == null ||
+                    int.TryParse(Name.Substring("cluster".Length), out id) == false)
                 {
-                    throw new SubGraphNameIsNotInCorrectFormat(this.Name);
+                    throw new SubGraphNameIsNotInCorrectFormat(Name);
                 }
 
                 return id;
@@ -28,12 +28,12 @@ namespace Graphviz4Net.Dot
 
         public double? Width
         {
-            get { return this.BoundingBox.RightX - this.BoundingBox.LeftX; }
+            get { return BoundingBox.RightX - BoundingBox.LeftX; }
         }
 
         public double? Height
         {
-            get { return this.BoundingBox.UpperY - this.bondingBox.LowerY; }
+            get { return BoundingBox.UpperY - bondingBox.LowerY; }
         }
 
         public BoundingBox BoundingBox
@@ -41,13 +41,13 @@ namespace Graphviz4Net.Dot
             get
             {
                 string newBb;
-                this.Attributes.TryGetValue("bb", out newBb);
-                if (this.bondingBox == null || this.bondingBox.Equals(newBb) == false)
+                Attributes.TryGetValue("bb", out newBb);
+                if (bondingBox == null || bondingBox.Equals(newBb) == false)
                 {
-                    this.bondingBox = new BoundingBox(newBb);
+                    bondingBox = new BoundingBox(newBb);
                 }
 
-                return this.bondingBox;
+                return bondingBox;
             }
         }       
 

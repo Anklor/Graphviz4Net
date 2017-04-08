@@ -8,8 +8,8 @@ namespace Graphviz4Net.WPF.ViewModels
     {
         public EdgeViewModel(Geometry data, IEdge edge)
         {
-            this.Data = data;
-            this.Edge = edge;
+            Data = data;
+            Edge = edge;
         }
 
         public Geometry Data { get; private set; }

@@ -31,7 +31,7 @@ namespace Graphviz4Net.Dot
 
         public DotVertex(TId id, IDictionary<string, string> attributes)
         {
-            this.Id = id;
+            Id = id;
             this.attributes = attributes;
         }
 
@@ -39,19 +39,19 @@ namespace Graphviz4Net.Dot
 
         public double? Width
         {
-            get { return Utils.ParseInvariantNullableDouble(this.Attributes.GetValue("width")); }
+            get { return Utils.ParseInvariantNullableDouble(Attributes.GetValue("width")); }
         }
 
         public double? Height
         {
-            get { return Utils.ParseInvariantNullableDouble(this.Attributes.GetValue("height")); }
+            get { return Utils.ParseInvariantNullableDouble(Attributes.GetValue("height")); }
         }
 
         public Point? Position
         {
             get
             {
-                var posStr = this.Attributes.GetValue("pos");
+                var posStr = Attributes.GetValue("pos");
                 if (string.IsNullOrEmpty(posStr))
                 {
                     return null;
@@ -76,12 +76,12 @@ namespace Graphviz4Net.Dot
 
         public IDictionary<string, string> Attributes
         {
-            get { return this.attributes; }
+            get { return attributes; }
         }
 
         public override string ToString()
         {
-            return this.Id.ToString();
+            return Id.ToString();
         }
     }
 }

@@ -7,8 +7,8 @@ namespace Graphviz4Net.WPF.ViewModels
     {
         public BorderViewModel(string label, ISubGraph subGraph)
         {
-            this.Label = label;
-            this.SubGraph = subGraph;
+            Label = label;
+            SubGraph = subGraph;
         }
 
         public string Label { get; private set; }

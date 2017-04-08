@@ -9,8 +9,8 @@ namespace Graphviz4Net.WPF.Example
 
         public MainWindow()
         {
-            this.viewModel = new MainWindowViewModel();
-            this.DataContext = viewModel;
+            viewModel = new MainWindowViewModel();
+            DataContext = viewModel;
             InitializeComponent();
             this.AddNewEdge.Click += AddNewEdgeClick;
             this.AddNewPerson.Click += AddNewPersonClick;
@@ -19,20 +19,20 @@ namespace Graphviz4Net.WPF.Example
 
 		void UpdatePersonClick(object sender, RoutedEventArgs e)
 		{
-			this.viewModel.UpdatePersonName = (string) this.UpdatePersonName.SelectedItem;
-			this.viewModel.UpdatePerson();
+            viewModel.UpdatePersonName = (string) this.UpdatePersonName.SelectedItem;
+            viewModel.UpdatePerson();
 		}
 
         private void AddNewPersonClick(object sender, RoutedEventArgs e)
         {
-            this.viewModel.CreatePerson();
+            viewModel.CreatePerson();
         }
 
         private void AddNewEdgeClick(object sender, RoutedEventArgs e)
         {
-            this.viewModel.NewEdgeStart = (string) this.NewEdgeStart.SelectedItem;
-            this.viewModel.NewEdgeEnd = (string)this.NewEdgeEnd.SelectedItem;
-            this.viewModel.CreateEdge();
+            viewModel.NewEdgeStart = (string) this.NewEdgeStart.SelectedItem;
+            viewModel.NewEdgeEnd = (string)this.NewEdgeEnd.SelectedItem;
+            viewModel.CreateEdge();
         }        
     }
 }

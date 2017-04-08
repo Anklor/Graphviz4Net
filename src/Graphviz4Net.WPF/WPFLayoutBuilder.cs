@@ -42,7 +42,7 @@ namespace Graphviz4Net.WPF
             this.graph = graph;
             foreach (var vertex in graph.GetAllVertices())
             {
-                var element = this.elementsFactory.CreateVertex(vertex);
+                var element = elementsFactory.CreateVertex(vertex);
                 if (element == null)
                 {
                     throw new InvalidOperationException(
@@ -50,14 +50,14 @@ namespace Graphviz4Net.WPF
                 }
 
                 // add it to canvas:
-                this.canvas.Children.Add(element);
-                this.verticesElements.Add(vertex, element);
+                canvas.Children.Add(element);
+                verticesElements.Add(vertex, element);
 
                 // measure it:
                 element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 double width = element.DesiredSize.Width * (1.0 / 72.0);
                 double height = element.DesiredSize.Height * (1.0 / 72.0);
-                this.verticesSizes.Add(vertex, new Size(width, height));
+                verticesSizes.Add(vertex, new Size(width, height));
 
                 // hide it till we finish:
 #if SILVERLIGHT
@@ -70,12 +70,12 @@ namespace Graphviz4Net.WPF
 
         public override Size GetSize(object vertex)
         {
-            return this.verticesSizes[vertex];
+            return verticesSizes[vertex];
         }
 
         public override void Finish()
         {
-            foreach (var element in this.verticesElements)
+            foreach (var element in verticesElements)
             {
                 element.Value.Visibility = Visibility.Visible;
             }
@@ -83,13 +83,13 @@ namespace Graphviz4Net.WPF
 
         public override void BuildGraph(double width, double height, IGraph original, DotGraph<int> dotGraph)
         {
-            this.canvas.Width = width;
-            this.canvas.Height = height;
+            canvas.Width = width;
+            canvas.Height = height;
         }
 
         public override void BuildVertex(Point position, double width, double height, object originalVertex, DotVertex<int> dotVertex)
         {
-            var element = this.verticesElements[originalVertex];
+            var element = verticesElements[originalVertex];
             UpdatePosition(element, position.X, position.Y, width, height, canvas);
 #if !SILVERLIGHT
             Panel.SetZIndex(element, 1);    // TODO: implement this functionality for Silverlight
@@ -104,7 +104,7 @@ namespace Graphviz4Net.WPF
             ISubGraph originalSubGraph,
             DotSubGraph<int> subGraph)
         {
-            var element = this.elementsFactory.CreateSubGraphBorder(new BorderViewModel(subGraph.Label, originalSubGraph));
+            var element = elementsFactory.CreateSubGraphBorder(new BorderViewModel(subGraph.Label, originalSubGraph));
             canvas.Children.Add(element);
             element.Width = rightX - leftX;
             element.Height = upperY - lowerY;
@@ -116,7 +116,7 @@ namespace Graphviz4Net.WPF
 #if !SILVERLIGHT
             Panel.SetZIndex(element, -1);   // TODO: implement this functionality for silverlight
 #endif
-            this.verticesElements.Add(originalSubGraph, element);
+            verticesElements.Add(originalSubGraph, element);
         }
 
         public override void BuildEdge(Point[] path, IEdge originalEdge, DotEdge<int> edge)
@@ -124,10 +124,10 @@ namespace Graphviz4Net.WPF
 #if SILVERLIGHT
             var data = new StringToPathGeometryConverter().Convert(TransformCoordinates(path, this.canvas));
 #else
-            var data = Geometry.Parse(TransformCoordinates(path, this.canvas));
+            var data = Geometry.Parse(TransformCoordinates(path, canvas));
 #endif
-            var edgeElement = this.elementsFactory.CreateEdge(new EdgeViewModel(data, originalEdge));
-            this.canvas.Children.Add(edgeElement);
+            var edgeElement = elementsFactory.CreateEdge(new EdgeViewModel(data, originalEdge));
+            canvas.Children.Add(edgeElement);
 
             if (edge.DestinationArrowEnd.HasValue)
             {
@@ -135,8 +135,8 @@ namespace Graphviz4Net.WPF
                     TransformCoordinates(edge.DestinationArrowEnd.Value, canvas),
                     TransformCoordinates(path.Last(), canvas),
                     edge.Destination,
-                    this.elementsFactory.CreateEdgeArrow(new EdgeArrowViewModel(originalEdge, originalEdge.DestinationArrow)),
-                    this.canvas);
+                    elementsFactory.CreateEdgeArrow(new EdgeArrowViewModel(originalEdge, originalEdge.DestinationArrow)),
+                    canvas);
             }
 
             if (edge.SourceArrowEnd.HasValue)
@@ -145,34 +145,34 @@ namespace Graphviz4Net.WPF
                     TransformCoordinates(edge.SourceArrowEnd.Value, canvas),
                     TransformCoordinates(path.First(), canvas),
                     edge.Source,
-                    this.elementsFactory.CreateEdgeArrow(new EdgeArrowViewModel(originalEdge, originalEdge.SourceArrow)),
-                    this.canvas);
+                    elementsFactory.CreateEdgeArrow(new EdgeArrowViewModel(originalEdge, originalEdge.SourceArrow)),
+                    canvas);
             }
 
             if (edge.LabelPos.HasValue)
             {
-                var labelElement = this.elementsFactory.CreateEdgeLabel(new EdgeLabelViewModel(edge.Label, originalEdge));
-                this.CreateLabel(edge.LabelPos.Value, labelElement);
+                var labelElement = elementsFactory.CreateEdgeLabel(new EdgeLabelViewModel(edge.Label, originalEdge));
+                CreateLabel(edge.LabelPos.Value, labelElement);
             }
 
             if (edge.SourceArrowLabelPosition.HasValue)
             {
                 var viewModel = new EdgeArrowLabelViewModel(edge.SourceArrowLabel, originalEdge, edge.SourceArrow);
-                var labelElement = this.elementsFactory.CreateEdgeArrowLabel(viewModel);
-                this.CreateLabel(edge.SourceArrowLabelPosition.Value, labelElement);
+                var labelElement = elementsFactory.CreateEdgeArrowLabel(viewModel);
+                CreateLabel(edge.SourceArrowLabelPosition.Value, labelElement);
             }
 
             if (edge.DestinationArrowLabelPosition.HasValue)
             {
                 var viewModel = new EdgeArrowLabelViewModel(edge.DestinationArrowLabel, originalEdge, originalEdge.DestinationArrow);
-                var labelElement = this.elementsFactory.CreateEdgeArrowLabel(viewModel);
-                this.CreateLabel(edge.DestinationArrowLabelPosition.Value, labelElement);
+                var labelElement = elementsFactory.CreateEdgeArrowLabel(viewModel);
+                CreateLabel(edge.DestinationArrowLabelPosition.Value, labelElement);
             }
         }
 
         private void CreateLabel(Point pos, FrameworkElement label)
         {
-            this.canvas.Children.Add(label);
+            canvas.Children.Add(label);
             label.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             Point p = TransformCoordinates(pos, canvas);
             Canvas.SetLeft(label, p.X - label.DesiredSize.Width / 2);

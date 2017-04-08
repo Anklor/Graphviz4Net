@@ -12,17 +12,17 @@ namespace Graphviz4Net.Dot.AntlrParser
 
         public void EnterSubGraph(string name)
         {
-            this.Builder.EnterSubGraph(name);
+            Builder.EnterSubGraph(name);
         }
 
         public void LeaveSubGraph()
         {
-            this.Builder.LeaveSubGraph();
+            Builder.LeaveSubGraph();
         }
 
         public void AddGraphAttributes(IDictionary<string, string> attributes)
         {
-            this.Builder.AddGraphAttributes(attributes);
+            Builder.AddGraphAttributes(attributes);
         }
 
         /// <summary>
@@ -35,12 +35,12 @@ namespace Graphviz4Net.Dot.AntlrParser
 
         public void AddEdge(string sourceStr, string targetStr, IDictionary<string, string> attributes)
         {
-            this.Builder.AddEdge(sourceStr, targetStr, attributes);
+            Builder.AddEdge(sourceStr, targetStr, attributes);
         }
 
         public void AddVertex(string idStr, IDictionary<string, string> attributes)
         {
-            this.Builder.AddVertex(idStr, attributes);
+            Builder.AddVertex(idStr, attributes);
         }
     }
 }

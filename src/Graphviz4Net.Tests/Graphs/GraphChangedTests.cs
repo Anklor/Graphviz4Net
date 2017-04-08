@@ -14,48 +14,48 @@ namespace Graphviz4Net.Tests.Graphs
         [SetUp]
         public void SetUp()
         {
-            this.graph = new Graph<Model>();
-            this.graph.Changed += GraphChanged;
-            this.graphChangedCalled = 0;
+            graph = new Graph<Model>();
+            graph.Changed += GraphChanged;
+            graphChangedCalled = 0;
         }
 
         [Test]
         public void ChangedFiredAfterAddVertex()
         {
-            this.graph.AddVertex(new Model());
-            Assert.AreEqual(1, this.graphChangedCalled);
+            graph.AddVertex(new Model());
+            Assert.AreEqual(1, graphChangedCalled);
         }
 
         [Test]
         public void ChangedFiredAfterAddSubGraph()
         {
-            this.graph.AddSubGraph(new SubGraph<Model>());
-            Assert.AreEqual(1, this.graphChangedCalled);
+            graph.AddSubGraph(new SubGraph<Model>());
+            Assert.AreEqual(1, graphChangedCalled);
         }
 
         [Test]
         public void ChangedFiredAfterAddVertexToSubGraph()
         {
             var subgraph = new SubGraph<Model>();
-            this.graph.AddSubGraph(subgraph);
-            this.graphChangedCalled = 0;
+            graph.AddSubGraph(subgraph);
+            graphChangedCalled = 0;
             subgraph.AddVertex(new Model());
-            Assert.AreEqual(1, this.graphChangedCalled);
+            Assert.AreEqual(1, graphChangedCalled);
         }
 
         [Test]
         public void ChangedFiredAfterRemovalOfVertexWithEdges()
         {
             var model = new Model();
-            this.graph.AddVertex(model);
-            this.graphChangedCalled = 0;
-            this.graph.RemoveVertexWithEdges(model);
-            Assert.AreEqual(1, this.graphChangedCalled);            
+            graph.AddVertex(model);
+            graphChangedCalled = 0;
+            graph.RemoveVertexWithEdges(model);
+            Assert.AreEqual(1, graphChangedCalled);            
         }
 
         private void GraphChanged(object sender, GraphChangedArgs e)
         {
-            this.graphChangedCalled++;
+            graphChangedCalled++;
         }        
 
         public class Model

@@ -12,13 +12,13 @@ namespace Graphviz4Net.Dot.AntlrParser
 
         public StringDotGraphBuilder()
         {
-            this.DotGraph = new DotGraph<string>();
+            DotGraph = new DotGraph<string>();
         }
 
         protected override DotVertex<string> CreateVertex(string idStr, IDictionary<string, string> attributes)
         {
             var result = new DotVertex<string>(idStr, attributes);
-            this.vertices.Add(idStr, result);
+            vertices.Add(idStr, result);
             return result;
         }
 
@@ -26,7 +26,7 @@ namespace Graphviz4Net.Dot.AntlrParser
         {
             DotVertex<string> result;
             var firstPart = idStr.Split(new [] {':'}, StringSplitOptions.RemoveEmptyEntries).First();
-            if (this.vertices.TryGetValue(firstPart, out result))
+            if (vertices.TryGetValue(firstPart, out result))
             {
                 return result;
             }

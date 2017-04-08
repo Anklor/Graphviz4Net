@@ -28,15 +28,15 @@ namespace Graphviz4Net
             {
                 writeGraph(writer);
                 string graph = writer.GetStringBuilder().ToString();
-                var graphFile = Path.Combine(Path.GetTempPath(), this.filename + ".dot");
+                var graphFile = Path.Combine(Path.GetTempPath(), filename + ".dot");
                 File.WriteAllText(graphFile, graph);
 
                 // now we read the file and write it to the real process input.
-                using (var reader = this.runner.Run(w => w.Write(graph), format, engine))
+                using (var reader = runner.Run(w => w.Write(graph), format, engine))
                 {
                     // we read all output, save it into another file, and return it as a memory stream
                     var text = reader.ReadToEnd();
-                    var layoutFile = Path.Combine(Path.GetTempPath(), this.filename + ".layout.dot");
+                    var layoutFile = Path.Combine(Path.GetTempPath(), filename + ".layout.dot");
                     File.WriteAllBytes(layoutFile, Encoding.UTF8.GetBytes(text));
                     return new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(text)));
                 }

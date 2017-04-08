@@ -42,14 +42,14 @@ namespace Graphviz4Net.Graphs
 
         public override string ToString()
         {
-            return this.value;
+            return value;
         }
 
         public bool Equals(RankDirection other)
         {
             if (ReferenceEquals(null, other)) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            return Equals(other.value, this.value);
+            return Equals(other.value, value);
         }
 
         public override bool Equals(object obj)
@@ -62,7 +62,7 @@ namespace Graphviz4Net.Graphs
 
         public override int GetHashCode()
         {
-            return (this.value != null ? this.value.GetHashCode() : 0);
+            return ( value != null ? value.GetHashCode() : 0);
         }
     }
 }

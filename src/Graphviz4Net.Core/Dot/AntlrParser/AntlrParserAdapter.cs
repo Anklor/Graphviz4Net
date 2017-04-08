@@ -78,9 +78,9 @@ namespace Graphviz4Net.Dot.AntlrParser
             var lexer = new DotGrammarLexer(antlrStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new DotGrammarParser(tokenStream);
-            parser.Builder = this.builder;
+            parser.Builder = builder;
             parser.dot();
-            return this.builder.DotGraph;
+            return builder.DotGraph;
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Graphviz4Net.Dot.AntlrParser
         public DotGraph<TVertexId> Parse(string graph)
         {
             var reader = new StringReader(graph);
-            return this.Parse(reader);
+            return Parse(reader);
         }
     }
 }

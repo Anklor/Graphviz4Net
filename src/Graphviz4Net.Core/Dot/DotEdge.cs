@@ -39,7 +39,7 @@ namespace Graphviz4Net.Dot
             {
                 string idStr;
                 int id;
-                if (this.Attributes.TryGetValue("comment", out idStr) &&
+                if (Attributes.TryGetValue("comment", out idStr) &&
                     int.TryParse(idStr, out id))
                 {
                     return id;
@@ -58,8 +58,8 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                this.ParsePathData();
-                return this.data;
+                ParsePathData();
+                return data;
             }
         }
 
@@ -67,7 +67,7 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                var lb = this.Attributes.GetValue("lp");
+                var lb = Attributes.GetValue("lp");
                 if (lb == null)
                 { 
                     return null;
@@ -94,8 +94,8 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                this.ParsePathData();
-                return this.destionationArrowPos;
+                ParsePathData();
+                return destionationArrowPos;
             }
         }
 
@@ -103,8 +103,8 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                this.ParsePathData();
-                return this.sourceArrowPos;
+                ParsePathData();
+                return sourceArrowPos;
             }
         }
 
@@ -112,13 +112,13 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                var value = this.Attributes.GetValue("head_lp");
+                var value = Attributes.GetValue("head_lp");
                 if (value == null)
                 {
                     return null;
                 }
 
-                return this.GetPosition(value);
+                return GetPosition(value);
             }
         }
 
@@ -126,13 +126,13 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                var value = this.Attributes.GetValue("tail_lp");
+                var value = Attributes.GetValue("tail_lp");
                 if (value == null)
                 {
                     return null;
                 }
 
-                return this.GetPosition(value);
+                return GetPosition(value);
             }
         }
 
@@ -140,44 +140,44 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                var result = this.Attributes.GetValue("pos");
+                var result = Attributes.GetValue("pos");
                 return result != null && result.StartsWith("e");
             }
         }
 
         private void ParsePathData()
         {
-            var pos = this.Attributes.GetValue("pos");
+            var pos = Attributes.GetValue("pos");
             if (string.IsNullOrEmpty(pos))
             {
                 throw new InvalidFormatException(string.Format("The pos attribute of edge {0} is empty.", this));
             }
 
-            if (pos == this.parsedPos && this.data != null)
+            if (pos == parsedPos && data != null)
             {
                 return;
             }
 
-            this.parsedPos = pos;
+            parsedPos = pos;
             var positions = pos.Trim().Split(' ').Select(x => x.Trim());
 
             var destinationArrowPosStr = positions.FirstOrDefault(x => x.StartsWith("e"));
             if (destinationArrowPosStr != null)
             {
-                this.destionationArrowPos = 
-                    this.GetPosition(destinationArrowPosStr.Substring(2, destinationArrowPosStr.Length - 2));
+                destionationArrowPos =
+                    GetPosition(destinationArrowPosStr.Substring(2, destinationArrowPosStr.Length - 2));
             }
 
             var sourceArrowPosStr = positions.FirstOrDefault(x => x.StartsWith("s"));
             if (sourceArrowPosStr != null)
             {
-                this.sourceArrowPos =
-                    this.GetPosition(sourceArrowPosStr.Substring(2, sourceArrowPosStr.Length - 2));
+                sourceArrowPos =
+                    GetPosition(sourceArrowPosStr.Substring(2, sourceArrowPosStr.Length - 2));
             }
 
             try
             {
-                this.data = positions.Where(x => x != sourceArrowPosStr && x != destinationArrowPosStr)
+                data = positions.Where(x => x != sourceArrowPosStr && x != destinationArrowPosStr)
                     .Select(GetPosition).ToArray();
             }
             catch (InvalidFormatException e)

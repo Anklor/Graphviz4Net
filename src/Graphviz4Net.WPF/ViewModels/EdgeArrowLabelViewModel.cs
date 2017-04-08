@@ -7,9 +7,9 @@ namespace Graphviz4Net.WPF.ViewModels
     {
         public EdgeArrowLabelViewModel(string label, IEdge edge, object arrow)
         {
-            this.Label = label;
-            this.Edge = edge;
-            this.Arrow = arrow;
+            Label = label;
+            Edge = edge;
+            Arrow = arrow;
         }
 
         public string Label { get; private set; }

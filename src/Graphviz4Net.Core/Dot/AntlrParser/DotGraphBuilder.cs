@@ -34,46 +34,46 @@ namespace Graphviz4Net.Dot.AntlrParser
 
             foreach (var attribute in attributes)
             {
-                if (this.subGraph == null)
+                if (subGraph == null)
                 {
-                    this.DotGraph.Attributes.Add(attribute);
+                    DotGraph.Attributes.Add(attribute);
                 }
                 else
                 {
-                    this.subGraph.Attributes.Add(attribute);
+                    subGraph.Attributes.Add(attribute);
                 }
             }
         }
 
         public void EnterSubGraph(string name)
         {
-            this.subGraph = new DotSubGraph<TVertexId> {Name = name};
-            this.DotGraph.AddSubGraph(this.subGraph);
+            subGraph = new DotSubGraph<TVertexId> {Name = name};
+            DotGraph.AddSubGraph(subGraph);
         }
 
         public void LeaveSubGraph()
         {
-            this.subGraph = null;
+            subGraph = null;
         }
 
         public void AddEdge(string sourceStr, string targetStr, IDictionary<string, string> attributes)
         {
-            var source = this.GetVertex(sourceStr);
-            var target = this.GetVertex(targetStr);
-            this.DotGraph.AddEdge(new DotEdge<TVertexId>(source, target, attributes));
+            var source = GetVertex(sourceStr);
+            var target = GetVertex(targetStr);
+            DotGraph.AddEdge(new DotEdge<TVertexId>(source, target, attributes));
         }
 
         public void AddVertex(string idStr, IDictionary<string, string> attributes)
         {
-            var vertex = this.CreateVertex(idStr, attributes);
+            var vertex = CreateVertex(idStr, attributes);
 
-            if (this.subGraph == null)
+            if (subGraph == null)
             {
-                this.DotGraph.AddVertex(vertex);
+                DotGraph.AddVertex(vertex);
             }
             else
             {
-                this.subGraph.AddVertex(vertex);
+                subGraph.AddVertex(vertex);
             }
         }
 

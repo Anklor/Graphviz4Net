@@ -14,10 +14,10 @@ namespace Graphviz4Net.Dot
                 var parts = dotRepresentation.Split(',');
                 if (parts.Length >= 4)
                 {
-                    this.LeftX = Utils.ParseInvariantNullableDouble(parts[0]);
-                    this.LowerY = Utils.ParseInvariantNullableDouble(parts[1]);
-                    this.RightX = Utils.ParseInvariantNullableDouble(parts[2]);
-                    this.UpperY = Utils.ParseInvariantNullableDouble(parts[3]);
+                    LeftX = Utils.ParseInvariantNullableDouble(parts[0]);
+                    LowerY = Utils.ParseInvariantNullableDouble(parts[1]);
+                    RightX = Utils.ParseInvariantNullableDouble(parts[2]);
+                    UpperY = Utils.ParseInvariantNullableDouble(parts[3]);
                 }
             }
         }
@@ -26,10 +26,10 @@ namespace Graphviz4Net.Dot
         {
             get
             {
-                return this.LeftX.HasValue && 
-                    this.RightX.HasValue && 
-                    this.LowerY.HasValue && 
-                    this.UpperY.HasValue;
+                return LeftX.HasValue &&
+                    RightX.HasValue &&
+                    LowerY.HasValue &&
+                    UpperY.HasValue;
             }
         }
 
@@ -43,7 +43,7 @@ namespace Graphviz4Net.Dot
 
         internal bool Equals(string bb)
         {
-            return this.dotRepresentation == bb;
+            return dotRepresentation == bb;
         }
     }
 }

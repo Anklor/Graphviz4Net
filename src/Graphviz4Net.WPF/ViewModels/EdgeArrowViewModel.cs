@@ -7,8 +7,8 @@ namespace Graphviz4Net.WPF.ViewModels
     {
         public EdgeArrowViewModel(IEdge edge, object arrow)
         {
-            this.Edge = edge;
-            this.Arrow = arrow;
+            Edge = edge;
+            Arrow = arrow;
         }
 
         public IEdge Edge { get; private set; }

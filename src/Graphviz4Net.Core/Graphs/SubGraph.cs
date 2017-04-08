@@ -15,19 +15,19 @@ namespace Graphviz4Net.Graphs
 
         IEnumerable<object> ISubGraph.Vertices
         {
-            get { return this.Vertices.Cast<object>(); }
+            get { return Vertices.Cast<object>(); }
         }
 
         public IEnumerable<TVertex> Vertices
         {
-            get { return this.vertices; }
+            get { return vertices; }
         }
 
         public void AddVertex(TVertex vertex)
         {
             Contract.Requires(vertex != null);
-            this.vertices.Add(vertex);
-            this.FireChanged();
+            vertices.Add(vertex);
+            FireChanged();
         }
 
         /// <summary>
@@ -44,18 +44,18 @@ namespace Graphviz4Net.Graphs
         {
             Contract.Requires(vertex != null);
             Contract.Requires(
-                this.Vertices.Contains(vertex),
+                Vertices.Contains(vertex),
                 "RemoveVertex: given vertex is not part of the graph. See the API documentation for more details.");
-            this.vertices.Remove(vertex);
+            vertices.Remove(vertex);
         }
 
         public string Label
         {
-            get { return this.Attributes.GetValue("label", string.Empty); }
+            get { return Attributes.GetValue("label", string.Empty); }
             set
             {
-                this.Attributes["label"] = value;
-                this.FireChanged();
+                Attributes["label"] = value;
+                FireChanged();
             }
         }
 
@@ -63,13 +63,13 @@ namespace Graphviz4Net.Graphs
 
         public IDictionary<string, string> Attributes
         {
-            get { return this.attributes; }
+            get { return attributes; }
         }
 
         public override string ToString()
         {
             var result = new StringBuilder("subgraph: ");
-            foreach (var vertex in this.Vertices)
+            foreach (var vertex in Vertices)
             {
                 result.AppendLine("\t" + vertex);
             }
@@ -81,7 +81,7 @@ namespace Graphviz4Net.Graphs
 
         IEnumerable<object> IVerticesCollection.Vertices
         {
-            get { return this.vertices.Cast<object>(); }
+            get { return vertices.Cast<object>(); }
         }
 
         void IVerticesCollection.AddVertex(object vertex)
@@ -96,16 +96,16 @@ namespace Graphviz4Net.Graphs
 
             }
 
-            this.AddVertex((TVertex)vertex);
+            AddVertex((TVertex)vertex);
         }
 
         #endregion
 
         private void FireChanged()
         {
-            if (this.Changed != null)
+            if (Changed != null)
             {
-                this.Changed(this, new GraphChangedArgs());
+                Changed(this, new GraphChangedArgs());
             }
         }
     }

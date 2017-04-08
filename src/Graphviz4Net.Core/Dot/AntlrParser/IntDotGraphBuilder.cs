@@ -9,7 +9,7 @@ namespace Graphviz4Net.Dot.AntlrParser
 
         public IntDotGraphBuilder()
         {
-            this.DotGraph = new DotGraph<int>();
+            DotGraph = new DotGraph<int>();
         }
 
         protected override DotVertex<int> CreateVertex(string idStr, IDictionary<string, string> attributes)
@@ -21,7 +21,7 @@ namespace Graphviz4Net.Dot.AntlrParser
             }
 
             var vertex = new DotVertex<int>(id, attributes);
-            this.vertices.InsertAt(id, vertex);
+            vertices.InsertAt(id, vertex);
             return vertex;
         }
 
@@ -43,7 +43,7 @@ namespace Graphviz4Net.Dot.AntlrParser
                 throw new ParserException(GetInvalidIdMessage(idStr));
             }
 
-            if (id >= this.vertices.Count || id < 0 || this.vertices[id] == null)
+            if (id >= vertices.Count || id < 0 || vertices[id] == null)
             {
                 var msg = string.Format(
                     "The id '{0}', which was found in the input file, has either wrong format, or " +
@@ -52,7 +52,7 @@ namespace Graphviz4Net.Dot.AntlrParser
                 throw new ParserException();                
             }
 
-            return this.vertices[id];
+            return vertices[id];
         }
     }
 }

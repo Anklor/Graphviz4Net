@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -16,36 +15,27 @@ namespace Graphviz4Net.WPF.Example
         public Person(Graph<Person> graph)
         {
             this.graph = graph;
-            this.Avatar = "./Avatars/avatarAnon.gif";
+            Avatar = "./Avatars/avatarAnon.gif";
         }
 
     	private string name;
     	public string Name
     	{
-    		get { return this.name; }
+    		get { return name; }
     		set
     		{
-    			this.name = value;
-    			if (this.PropertyChanged != null) {
-    				this.PropertyChanged(this, new PropertyChangedEventArgs("Name"));
-    			}
-    		}
+                name = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Name"));
+            }
     	}
 
     	public string Avatar { get; set; }
 
-        public string Email
-        {
-            get
-            {
-                return this.Name.ToLower().Replace(' ', '.') + "@gmail.com";
-            }
-        }
+        public string Email => Name.ToLower().Replace(' ', '.') + "@gmail.com";
 
-        public ICommand RemoveCommand
-        {
-            get { return new RemoveCommandImpl(this); }
-        }
+
+        public ICommand RemoveCommand => new RemoveCommandImpl(this); 
+
 
         private class RemoveCommandImpl : ICommand
         {
@@ -58,13 +48,11 @@ namespace Graphviz4Net.WPF.Example
 
             public void Execute(object parameter)
             {
-                this.person.graph.RemoveVertexWithEdges(this.person);
+                person.graph.RemoveVertexWithEdges(person);
             }
 
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
+            public bool CanExecute(object parameter) => true;
+            
 
             public event EventHandler CanExecuteChanged;
         }
@@ -124,10 +112,10 @@ namespace Graphviz4Net.WPF.Example
             graph.AddEdge(new Edge<Person>(f, b, new DiamondArrow(), new DiamondArrow()));
             graph.AddEdge(new Edge<Person>(e, g, new Arrow(), new Arrow()) { Label = "Siblings" });
 
-            this.Graph = graph;
-            this.Graph.Changed += GraphChanged;
-            this.NewPersonName = "Enter new name";
-        	this.UpdatePersonNewName = "Enter new name";
+            Graph = graph;
+            Graph.Changed += GraphChanged;
+            NewPersonName = "Enter new name";
+            UpdatePersonNewName = "Enter new name";
         }
 
         public Graph<Person> Graph { get; private set; }
@@ -139,7 +127,7 @@ namespace Graphviz4Net.WPF.Example
             set
             {
                 _layoutEngine = value;
-                this.RaisePropertyChanged("LayoutEngine");
+                RaisePropertyChanged("LayoutEngine");
             }
         }
 
@@ -149,11 +137,8 @@ namespace Graphviz4Net.WPF.Example
 
 		public string UpdatePersonNewName { get; set; }
 
-        public IEnumerable<string> PersonNames
-        {
-            get { return this.Graph.AllVertices.Select(x => x.Name); }
-        }
-
+        public IEnumerable<string> PersonNames => Graph.AllVertices.Select(x => x.Name); 
+        
         public string NewEdgeStart { get; set; }
 
         public string NewEdgeEnd { get; set; }
@@ -162,64 +147,50 @@ namespace Graphviz4Net.WPF.Example
 
         public void CreateEdge()
         {
-            if (string.IsNullOrWhiteSpace(this.NewEdgeStart) ||
-                string.IsNullOrWhiteSpace(this.NewEdgeEnd))
-            {
+            if (string.IsNullOrWhiteSpace(NewEdgeStart) || string.IsNullOrWhiteSpace(NewEdgeEnd))
                 return;
-            }
 
-            this.Graph.AddEdge(
-                new Edge<Person>
-                    (this.GetPerson(this.NewEdgeStart), 
-                    this.GetPerson(this.NewEdgeEnd))
-                    {
-                        Label = this.NewEdgeLabel
-                    });
+            Graph.AddEdge(new Edge<Person>(GetPerson(NewEdgeStart), GetPerson(NewEdgeEnd))
+            {
+                Label = NewEdgeLabel
+            });
         }
 
         public void CreatePerson()
         {
-            if (this.PersonNames.Any(x => x == this.NewPersonName))
+            if (PersonNames.Any(x => x == NewPersonName))
             {
                 // such a person already exists: there should be some validation message, but 
                 // it is not so important in a demo
                 return;
             }
 
-            var p = new Person(this.Graph) { Name = this.NewPersonName };
-            this.Graph.AddVertex(p);
+            var p = new Person(Graph) { Name = NewPersonName };
+            Graph.AddVertex(p);
         }
 
 		public void UpdatePerson()
 		{
-			if (string.IsNullOrWhiteSpace(this.UpdatePersonName)) 
-			{
+			if (string.IsNullOrWhiteSpace(UpdatePersonName)) 
 				return;
-			}
 
-			this.GetPerson(this.UpdatePersonName).Name = this.UpdatePersonNewName;
-			this.RaisePropertyChanged("PersonNames");
-			this.RaisePropertyChanged("Graph");
+            GetPerson(UpdatePersonName).Name = UpdatePersonNewName;
+            RaisePropertyChanged("PersonNames");
+            RaisePropertyChanged("Graph");
 		}
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void GraphChanged(object sender, GraphChangedArgs e)
         {
-            this.RaisePropertyChanged("PersonNames");
+            RaisePropertyChanged("PersonNames");
         }
 
         private void RaisePropertyChanged(string property)
         {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        private Person GetPerson(string name)
-        {
-            return this.Graph.AllVertices.First(x => string.CompareOrdinal(x.Name, name) == 0);
-        }
+        private Person GetPerson(string name) => Graph.AllVertices.First(x => string.CompareOrdinal(x.Name, name) == 0);        
     }
 }
